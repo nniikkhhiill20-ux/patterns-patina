@@ -1,0 +1,25 @@
+---
+// Horizontal wordmark — PATTERNS + PATINA. The + is Crest Gold.
+// The crest image is never used at nav scale.
+interface Props {
+  size?: number;      // font-size in px
+  color?: string;     // ink by default
+  class?: string;
+}
+const { size = 14, color = 'var(--ink)', class: cls = '' } = Astro.props;
+---
+<span
+  class:list={['wordmark', cls]}
+  style={`font-size:${size}px;color:${color}`}
+>PATTERNS <span class="gold-plus">+</span> PATINA</span>
+
+<style>
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 300;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1;
+  }
+</style>

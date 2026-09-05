@@ -1,0 +1,96 @@
+---
+export const prerender = true;
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import { capsulesNewestFirst, piecesInCapsule } from '../../data/content';
+const list = capsulesNewestFirst();
+---
+<Base title="Capsules" description="The collections of Patterns + Patina, newest first.">
+  <section class="section page-pad capsules-title">
+    <p class="eyebrow">The collections</p>
+    <h1 class="h1">Capsules</h1>
+    <p class="body capsules-title__lead">
+      Each capsule is a small, complete idea — a handful of pieces, one mood, made afresh and released together. Newest first.
+    </p>
+  </section>
+
+  <div class="page-pad capsules-list">
+    {list.map((c, i) => {
+      const count = piecesInCapsule(c.slug).length;
+      return (
+        <article class:list={['capsule-row reveal', i % 2 === 1 && 'capsule-row--reverse']}>
+          <a class="capsule-row__media frame frame--zoom" href={`/capsules/${c.slug}`}>
+            <Image
+              src={c.cover}
+              alt={c.coverAlt}
+              widths={[480, 768, 1000]}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              class="ratio-4-5"
+              loading="lazy"
+            />
+          </a>
+          <div class="capsule-row__text">
+            <p class="capsule-row__num">{c.number}</p>
+            <h2 class="capsule-row__name">{c.name}</h2>
+            <p class="body capsule-row__desc">{c.description}</p>
+            <p class="capsule-row__count">{count} {count === 1 ? 'piece' : 'pieces'}</p>
+            <Button href={`/capsules/${c.slug}`} variant="tertiary">See the capsule</Button>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</Base>
+
+<style>
+  .capsules-title { padding-bottom: 40px; }
+  .capsules-title .eyebrow { margin-bottom: 14px; }
+  .capsules-title__lead { margin-top: 22px; }
+
+  .capsules-list { padding-bottom: 96px; }
+  .capsule-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+    margin-bottom: 96px;
+  }
+  .capsule-row:last-child { margin-bottom: 0; }
+  .capsule-row--reverse .capsule-row__media { order: 2; }
+  .capsule-row--reverse .capsule-row__text { order: 1; }
+
+  .capsule-row__media { display: block; }
+  .capsule-row__num {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--label);
+    margin-bottom: 16px;
+  }
+  .capsule-row__name {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(34px, 4vw, 54px);
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .capsule-row__desc { margin-top: 18px; max-width: 42ch; }
+  .capsule-row__count {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 20px 0 22px;
+  }
+
+  @media (max-width: 768px) {
+    .capsule-row { grid-template-columns: 1fr; gap: 24px; }
+    .capsule-row--reverse .capsule-row__media,
+    .capsule-row--reverse .capsule-row__text { order: initial; }
+  }
+</style>

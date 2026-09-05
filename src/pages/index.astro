@@ -1,0 +1,237 @@
+---
+export const prerender = true;
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import Divider from '../components/Divider.astro';
+import ProductCard from '../components/ProductCard.astro';
+import LetterSignup from '../components/LetterSignup.astro';
+import { featuredPieces, capsuleBySlug } from '../data/content';
+
+import heroImg from '../assets/photography/armchair-ikat-lakeside.png';
+import capsuleImg from '../assets/photography/capsule-cover-elsewhere.png';
+import crest from '../assets/logo/pp-crest.png';
+
+const featured = featuredPieces();
+const elsewhere = capsuleBySlug('elsewhere')!;
+---
+<Base>
+  <!-- a. Hero -->
+  <section class="hero">
+    <div class="hero__text">
+      <p class="eyebrow--mono hero__eyebrow">EST. 2026</p>
+      <h1 class="h1">Classic forms,<br />reimagined through pattern.</h1>
+      <p class="body hero__body">
+        Chairs, settees, ottomans and dining tables, made afresh in Nairobi from real wood and by experienced hands.
+      </p>
+      <div class="hero__actions">
+        <Button href="/commissions" variant="primary">Start a commission</Button>
+        <Button href="/capsules" variant="secondary">See the capsules</Button>
+      </div>
+    </div>
+    <div class="hero__media frame">
+      <Image
+        src={heroImg}
+        alt="A white-frame ikat armchair alone beside a lake, autumn hills behind."
+        widths={[480, 768, 1000]}
+        sizes="(max-width: 768px) 100vw, 50vw"
+        class="ratio-4-5"
+        loading="eager"
+      />
+      <Image src={crest} alt="" class="watermark watermark--light" width={220} densities={[1, 2]} />
+    </div>
+  </section>
+
+  <!-- b. Manifesto pull -->
+  <section class="manifesto-pull">
+    <p class="manifesto-pull__line">Nothing is rushed. Nothing is quite identical.</p>
+    <Divider class="manifesto-pull__divider" />
+    <Button href="/about" variant="tertiary">Read the manifesto</Button>
+  </section>
+
+  <!-- c. Featured pieces -->
+  <section class="section page-pad featured">
+    <header class="featured__head reveal">
+      <p class="eyebrow">Selected pieces</p>
+      <h2 class="h2">Made this season</h2>
+    </header>
+    <div class="featured__grid">
+      {featured.map((p) => (<ProductCard piece={p} />))}
+    </div>
+  </section>
+
+  <!-- d. Capsule feature -->
+  <a class="capsule-feature frame frame--zoom reveal" href={`/capsules/${elsewhere.slug}`}>
+    <Image
+      src={capsuleImg}
+      alt="A lone tree on a cliff top above open water — the Elsewhere capsule."
+      widths={[768, 1200, 1800]}
+      sizes="100vw"
+      class="capsule-feature__img"
+      loading="lazy"
+    />
+    <div class="capsule-feature__overlay">
+      <span class="capsule-feature__name">{elsewhere.name}</span>
+      <span class="capsule-feature__num">{elsewhere.number}</span>
+    </div>
+  </a>
+
+  <!-- e. The making -->
+  <section class="section page-pad making">
+    <div class="making__grid reveal">
+      <div class="making__images">
+        <div class="placeholder ratio-1-1">Grain</div>
+        <div class="placeholder ratio-1-1">Carving</div>
+        <div class="placeholder ratio-1-1">Weave</div>
+      </div>
+      <div class="making__text">
+        <p class="eyebrow">The making</p>
+        <p class="body">
+          Every piece is made afresh in a Nairobi workshop, from real wood chosen board by board. We keep to slower, time-honoured ways of working.
+        </p>
+        <p class="body">
+          Shaping, carving and finishing are done by hand. The grain follows its own path, and the hand leaves its quiet trace, so small variations are embraced rather than erased.
+        </p>
+        <p class="body">
+          Because each piece is made to order, nothing sits in a warehouse. It is drawn, made and delivered for one house — yours.
+        </p>
+        <Button href="/about" variant="tertiary">Inside the workshop</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- f. Letters signup -->
+  <section class="letters">
+    <div class="letters__inner">
+      <h2 class="h2 letters__head">One note a season, on what left the workshop.</h2>
+      <LetterSignup tone="ink" buttonVariant="inverted" buttonLabel="Subscribe" class="letters__form" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    align-items: stretch;
+    border-bottom: 1px solid var(--bone);
+  }
+  .hero__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px;
+    order: 1;
+  }
+  .hero__eyebrow { margin-bottom: 22px; }
+  .hero__body { margin-top: 22px; max-width: 36ch; font-size: 15.5px; }
+  .hero__actions { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+  .hero__media { order: 2; min-height: 100%; }
+  @media (max-width: 768px) {
+    .hero__text { order: 2; padding: 40px 20px 48px; }
+    .hero__media { order: 1; }
+  }
+
+  /* Manifesto pull */
+  .manifesto-pull {
+    text-align: center;
+    padding: 110px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 34px;
+    background: var(--warm-paper);
+  }
+  .manifesto-pull__line {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(24px, 3vw, 36px);
+    color: var(--olive-story);
+    max-width: 24ch;
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  /* Featured */
+  .featured { background: var(--paper-deep); }
+  .featured__head { margin-bottom: 40px; }
+  .featured__head .eyebrow { margin-bottom: 12px; }
+  .featured__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  /* Capsule feature */
+  .capsule-feature {
+    position: relative;
+    display: block;
+  }
+  .capsule-feature__img { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; }
+  .capsule-feature::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(20,22,18,.45), transparent 45%);
+    pointer-events: none;
+  }
+  .capsule-feature__overlay {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    z-index: 2;
+    color: #fff;
+  }
+  .capsule-feature__name {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(46px, 7vw, 92px);
+    line-height: 1;
+    color: #FFFFFF;
+  }
+  .capsule-feature__num {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  @media (max-width: 768px) {
+    .capsule-feature__img { aspect-ratio: 4 / 5; }
+    .capsule-feature__overlay { left: 20px; bottom: 24px; }
+  }
+
+  /* The making */
+  .making__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .making__images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .making__text { max-width: 46ch; }
+  .making__text .eyebrow { display: block; margin-bottom: 16px; }
+  .making__text .body { margin-bottom: 18px; }
+  @media (max-width: 768px) {
+    .making__grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  /* Letters */
+  .letters { background: var(--ink); padding: 90px 20px; }
+  .letters__inner {
+    max-width: 620px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .letters__head { color: var(--paper-light); font-size: 32px; max-width: 20ch; }
+  .letters__form { margin-top: 34px; }
+</style>

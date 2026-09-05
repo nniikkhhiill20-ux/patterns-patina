@@ -1,0 +1,96 @@
+---
+import Wordmark from './Wordmark.astro';
+import LetterSignup from './LetterSignup.astro';
+import { site, footerExplore } from '../data/site';
+const year = 2026;
+---
+<footer class="site-footer">
+  <div class="site-footer__grid">
+    <div class="site-footer__col">
+      <Wordmark size={14} color="var(--paper-light)" />
+      <p class="site-footer__tagline">{site.tagline}</p>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__head">Visit</h2>
+      <p class="site-footer__lines">The Workshop, Nairobi<br />By appointment<br />Tuesday – Saturday</p>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__head">Explore</h2>
+      <ul class="site-footer__links">
+        {footerExplore.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__head">Letters</h2>
+      <p class="site-footer__lines">One note a season, on what left the workshop.</p>
+      <LetterSignup tone="ink" buttonVariant="inverted" buttonLabel="Subscribe" class="site-footer__letter" />
+    </div>
+  </div>
+
+  <div class="site-footer__bar">
+    <span>PATTERNS + PATINA · EST. {year}</span>
+    <a href="https://instagram.com" rel="noopener noreferrer" target="_blank">INSTAGRAM</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    color: #D9D3C4;
+    padding: 52px 72px 40px;
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 36px;
+  }
+  .site-footer__tagline {
+    color: #A9A395;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-top: 16px;
+    max-width: 30ch;
+  }
+  .site-footer__head {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10.5px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--crest-gold);
+    margin-bottom: 16px;
+  }
+  .site-footer__lines { color: #A9A395; font-size: 14px; line-height: 1.7; }
+  .site-footer__links { list-style: none; padding: 0; margin: 0; }
+  .site-footer__links li { margin-bottom: 10px; }
+  .site-footer__links a {
+    color: #D9D3C4;
+    font-size: 14px;
+    transition: color 200ms ease;
+  }
+  @media (hover: hover) { .site-footer__links a:hover { color: var(--crest-gold); } }
+  .site-footer__letter { margin-top: 18px; }
+
+  .site-footer__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid #3a362e;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  @media (hover: hover) { .site-footer__bar a:hover { color: var(--crest-gold); } }
+
+  @media (max-width: 768px) {
+    .site-footer { padding: 44px 20px 32px; }
+  }
+</style>

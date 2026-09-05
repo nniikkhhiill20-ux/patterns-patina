@@ -1,0 +1,110 @@
+---
+export const prerender = true;
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Divider from '../../components/Divider.astro';
+import { capsules, capsuleBySlug, piecesInCapsule } from '../../data/content';
+
+export function getStaticPaths() {
+  return capsules.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const capsule = capsuleBySlug(slug!)!;
+const items = piecesInCapsule(capsule.slug);
+---
+<Base title={capsule.name} description={capsule.description}>
+  <!-- Cover -->
+  <section class="cap-cover frame">
+    <Image
+      src={capsule.cover}
+      alt={capsule.coverAlt}
+      widths={[768, 1200, 1800]}
+      sizes="100vw"
+      class="cap-cover__img"
+      loading="eager"
+    />
+    <div class="cap-cover__overlay">
+      <h1 class="cap-cover__name">{capsule.name}</h1>
+      <span class="cap-cover__num">{capsule.number}</span>
+    </div>
+  </section>
+
+  <!-- Story (serif editorial) -->
+  <section class="cap-story">
+    {capsule.story.map((para) => (<p class="editorial">{para}</p>))}
+  </section>
+
+  <Divider class="cap-sep" />
+
+  <!-- Pieces -->
+  <section class="section page-pad cap-pieces">
+    <header class="cap-pieces__head reveal">
+      <p class="eyebrow">The pieces</p>
+      <h2 class="h2">In {capsule.name}</h2>
+    </header>
+    <div class="cap-pieces__grid">
+      {items.map((p) => (<ProductCard piece={p} />))}
+    </div>
+  </section>
+
+  <!-- Footer CTA -->
+  <section class="cap-cta">
+    <p class="cap-cta__line">Something close, but not quite this?</p>
+    <Button href="/commissions" variant="primary">Commission a variation</Button>
+  </section>
+</Base>
+
+<style>
+  .cap-cover { position: relative; }
+  .cap-cover__img { width: 100%; min-height: 78vh; object-fit: cover; }
+  .cap-cover::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(20,22,18,.45), transparent 45%);
+  }
+  .cap-cover__overlay { position: absolute; left: 40px; bottom: 40px; z-index: 2; color: #fff; }
+  .cap-cover__name {
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(46px, 7vw, 92px); line-height: 1; color: #fff;
+  }
+  .cap-cover__num {
+    display: block; margin-top: 14px;
+    font-family: var(--sans); font-weight: 400; font-size: 10px;
+    letter-spacing: .42em; text-transform: uppercase; color: #fff;
+  }
+  @media (max-width: 768px) { .cap-cover__overlay { left: 20px; bottom: 24px; } }
+
+  .cap-story {
+    max-width: 60ch;
+    margin: 0 auto;
+    padding: 96px 20px;
+  }
+  .cap-story .editorial + .editorial { margin-top: 24px; }
+
+  .cap-sep { margin: 0 auto; }
+
+  .cap-pieces__head { margin-bottom: 40px; }
+  .cap-pieces__head .eyebrow { margin-bottom: 12px; }
+  .cap-pieces__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .cap-cta {
+    background: var(--paper-deep);
+    text-align: center;
+    padding: 96px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .cap-cta__line {
+    font-family: var(--serif); font-weight: 300; font-style: italic;
+    font-size: clamp(24px, 3vw, 34px); color: var(--olive-story);
+  }
+</style>

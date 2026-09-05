@@ -1,0 +1,97 @@
+---
+// "One note a season" email capture. Email on a 1px bottom rule only.
+// `tone` controls colour for use on ink (footer/home band) vs paper.
+interface Props {
+  tone?: 'ink' | 'paper';
+  buttonLabel?: string;
+  buttonVariant?: 'primary' | 'inverted';
+  class?: string;
+}
+const {
+  tone = 'ink',
+  buttonLabel = 'Subscribe',
+  buttonVariant = 'inverted',
+  class: cls = '',
+} = Astro.props;
+---
+<form class:list={['letter', `letter--${tone}`, cls]} data-letter novalidate>
+  <div class="letter__row">
+    <label class="sr-only" for={`letter-${tone}`}>Email address</label>
+    <input
+      class="letter__input"
+      id={`letter-${tone}`}
+      type="email"
+      name="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder="Your email"
+      required
+    />
+    <button type="submit" class={`btn btn--${buttonVariant} letter__btn`}>{buttonLabel}</button>
+  </div>
+  <p class="letter__msg" data-letter-msg hidden></p>
+</form>
+
+<style>
+  .letter { width: 100%; max-width: 420px; }
+  .letter__row { display: flex; align-items: flex-end; gap: 14px; }
+  .letter__input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid;
+    padding: 10px 2px;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 14.5px;
+    outline: none;
+  }
+  .letter__btn { white-space: nowrap; }
+  .letter__msg {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    margin: 14px 0 0;
+  }
+
+  .letter--ink .letter__input { color: var(--paper-light); border-color: #4a463d; }
+  .letter--ink .letter__input::placeholder { color: #8C8577; }
+  .letter--ink .letter__input:focus { border-color: var(--crest-gold); }
+  .letter--ink .letter__msg { color: var(--crest-gold); }
+
+  .letter--paper .letter__input { color: var(--ink); border-color: var(--bone); }
+  .letter--paper .letter__input::placeholder { color: #A9A395; }
+  .letter--paper .letter__input:focus { border-color: var(--crest-gold); }
+  .letter--paper .letter__msg { color: var(--gold-text); }
+</style>
+
+<script>
+  // Progressive enhancement — posts to /api/enquiry with kind=letter.
+  document.querySelectorAll('form[data-letter]').forEach((formEl) => {
+    const form = formEl as HTMLFormElement;
+    const input = form.querySelector('.letter__input') as HTMLInputElement;
+    const msg = form.querySelector('[data-letter-msg]') as HTMLElement;
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!emailRe.test(email)) {
+        msg.hidden = false;
+        msg.textContent = 'Please enter a valid email.';
+        input.focus();
+        return;
+      }
+      try {
+        await fetch('/api/enquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: 'letter', email }),
+        });
+      } catch (_) { /* accept optimistically */ }
+      form.querySelector('.letter__row')?.setAttribute('hidden', 'true');
+      msg.hidden = false;
+      msg.textContent = 'Noted. One note a season, no more.';
+    });
+  });
+</script>

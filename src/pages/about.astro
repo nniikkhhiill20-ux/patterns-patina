@@ -1,0 +1,139 @@
+---
+export const prerender = true;
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { manifesto } from '../data/manifesto';
+import crest from '../assets/logo/pp-crest.png';
+import salonOak from '../assets/photography/salon-chairs-pair-oak.png';
+---
+<Base title="About" description="The manifesto of Patterns + Patina — made afresh in Nairobi, by hand.">
+  <!-- Crest -->
+  <section class="about-crest">
+    <Image src={crest} alt="The Patterns + Patina crest." width={180} densities={[1, 2]} class="about-crest__img" />
+  </section>
+
+  <!-- The manifesto, verbatim -->
+  <article class="manifesto">
+    <p class="manifesto__opening">{manifesto.openingItalic}</p>
+
+    {manifesto.paragraphs.map((para, i) => (
+      <>
+        {i > 0 && <span class="manifesto__mark" aria-hidden="true">•</span>}
+        <p class="manifesto__para">
+          {para.italicLead && <em class="manifesto__lead">{para.italicLead}</em>}
+          {para.italicLead && <br />}
+          {para.lines.map((line, j) => (
+            <>{line}{j < para.lines.length - 1 && <br />}</>
+          ))}
+        </p>
+      </>
+    ))}
+
+    <span class="manifesto__mark" aria-hidden="true">•</span>
+    <p class="manifesto__climax">
+      {manifesto.climaxItalic.map((line, j) => (
+        <><em>{line}</em>{j < manifesto.climaxItalic.length - 1 && <br />}</>
+      ))}
+    </p>
+
+    <span class="manifesto__mark" aria-hidden="true">•</span>
+    <p class="manifesto__para">
+      {manifesto.afterClimax.map((line, j) => (
+        <>{line}{j < manifesto.afterClimax.length - 1 && <br />}</>
+      ))}
+    </p>
+
+    <p class="manifesto__patina"><em>{manifesto.patinaItalic}</em></p>
+    <p class="manifesto__patina-sub"><em>{manifesto.patinaSub}</em></p>
+
+    <p class="manifesto__signature">{manifesto.signature}</p>
+    <p class="manifesto__est">{manifesto.est}</p>
+  </article>
+
+  <!-- Workshop photography + two columns -->
+  <section class="about-workshop frame" id="journal">
+    <Image
+      src={salonOak}
+      alt="A pair of toile salon chairs beside a tree at dusk."
+      widths={[768, 1200, 1800]}
+      sizes="100vw"
+      class="ratio-16-9"
+      loading="lazy"
+    />
+  </section>
+
+  <section class="section page-pad about-cols" id="care">
+    <div class="about-cols__grid">
+      <div>
+        <p class="eyebrow">In Nairobi</p>
+        <p class="body">
+          The workshop is in Nairobi, where the pieces are drawn, cut and finished. We work to appointment rather than to a shop floor, so each commission has the bench to itself.
+        </p>
+      </div>
+      <div>
+        <p class="eyebrow">By hand</p>
+        <p class="body">
+          Shaping, carving and finishing are done by experienced hands. Machines help where they should; the judgement — where a curve settles, how a pattern is matched — stays with the maker.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-crest { text-align: center; padding: 96px 20px 0; }
+  .about-crest__img { width: 180px; height: auto; margin: 0 auto; }
+
+  .manifesto {
+    max-width: 52ch;
+    margin: 0 auto;
+    padding: 56px 20px 96px;
+    text-align: center;
+  }
+  .manifesto__opening {
+    font-family: var(--serif); font-weight: 300; font-style: italic;
+    font-size: 20px; color: var(--olive-story); margin-bottom: 40px;
+  }
+  .manifesto__para, .manifesto__climax {
+    font-family: var(--serif); font-weight: 300;
+    font-size: 16.5px; line-height: 1.75; color: var(--ink-soft);
+  }
+  .manifesto__lead {
+    font-style: italic; color: var(--olive-story); font-size: 19px;
+  }
+  .manifesto__climax {
+    color: var(--olive-story); font-size: 19px; line-height: 1.5;
+  }
+  .manifesto__climax em, .manifesto__patina em, .manifesto__patina-sub em { font-style: italic; }
+  .manifesto__mark {
+    display: block; color: var(--crest-gold); font-size: 14px;
+    margin: 20px 0; line-height: 1;
+  }
+  .manifesto__patina {
+    font-family: var(--serif); font-weight: 300; font-size: 20px;
+    color: var(--olive-story); margin-top: 40px;
+  }
+  .manifesto__patina-sub {
+    font-family: var(--serif); font-weight: 300; font-size: 17px;
+    color: var(--olive-story); margin-top: 8px;
+  }
+  .manifesto__signature {
+    font-family: var(--sans); font-weight: 400; font-size: 11px;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--gold-text);
+    margin-top: 48px;
+  }
+  .manifesto__est {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+    color: #A7975F; margin-top: 14px;
+  }
+
+  .about-workshop { display: block; }
+
+  .about-cols__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 900px; margin: 0 auto;
+  }
+  .about-cols__grid .eyebrow { display: block; margin-bottom: 14px; }
+  @media (max-width: 768px) {
+    .about-cols__grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+</style>
