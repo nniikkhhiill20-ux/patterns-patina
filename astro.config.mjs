@@ -7,7 +7,7 @@ import node from '@astrojs/node';
 // only the enquiry endpoint is rendered on demand. The Node standalone adapter reads
 // HOST/PORT from the environment, which is how Railway assigns the public port.
 export default defineConfig({
-  site: 'https://patternspatina.com',
+  site: 'https://www.patternspatina.com',
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   image: {
