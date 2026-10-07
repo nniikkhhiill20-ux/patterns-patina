@@ -22,7 +22,7 @@ const capsule = capsuleBySlug(piece.capsule)!;
 const others = otherPiecesInCapsule(piece.capsule, piece.slug);
 const waHref = whatsappLink(`Hello Patterns + Patina — I'm interested in ${piece.name} (${capsule.name}, ${piece.number}).`);
 ---
-<Base title={piece.name} description={`${piece.tagline} ${piece.description[0]}`}>
+<Base title={piece.name} description={`${piece.tagline} ${piece.description[0]} ${piece.price}.`} image={piece.hero.src}>
   <div class="piece page-pad">
     <!-- Photograph -->
     <div class="piece__gallery">
