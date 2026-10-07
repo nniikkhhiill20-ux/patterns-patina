@@ -2,18 +2,24 @@
 // Patterns + Patina — content model
 // Content-driven, static. Capsules and pieces are defined here; images are
 // imported so Astro's build-time pipeline emits optimised WebP.
-// Voice rules: name the form, the wood, the pattern and the hands. No
-// superlatives, no "luxury", no exclamation marks. Say "made afresh", "pattern".
+// Source of truth: "Elsewhere · Capsule 006" catalogue (with prices, final).
+// Piece copy is VERBATIM from the catalogue — do not reword.
 // ============================================================================
 
 import type { ImageMetadata } from 'astro';
 
-import armchairLakeside from '../assets/photography/armchair-ikat-lakeside.png';
-import wingbackOrchard from '../assets/photography/wingback-floral-orchard.png';
-import ottomanForest from '../assets/photography/ottoman-ikat-forest.png';
-import setteeGarden from '../assets/photography/settee-ikat-garden.png';
-import salonOak from '../assets/photography/salon-chairs-pair-oak.png';
-import elsewhereCover from '../assets/photography/capsule-cover-elsewhere.png';
+import elsewhereCover from '../assets/photography/elsewhere/cover-forest-road.jpg';
+import yugen from '../assets/photography/elsewhere/01-yugen.jpg';
+import akari from '../assets/photography/elsewhere/02-akari.jpg';
+import folie from '../assets/photography/elsewhere/03-folie.jpg';
+import miyabi from '../assets/photography/elsewhere/04-miyabi.jpg';
+import arcadia from '../assets/photography/elsewhere/05-arcadia.jpg';
+import rhythm from '../assets/photography/elsewhere/06-rhythm.jpg';
+import muse from '../assets/photography/elsewhere/07-muse.jpg';
+import rosee from '../assets/photography/elsewhere/08-rosee.jpg';
+import reverie from '../assets/photography/elsewhere/09-reverie.jpg';
+import atlas from '../assets/photography/elsewhere/10-atlas.jpg';
+import paradox from '../assets/photography/elsewhere/11-paradox.jpg';
 
 export interface PieceImage {
   src: ImageMetadata;
@@ -22,22 +28,16 @@ export interface PieceImage {
 
 export interface Piece {
   slug: string;
-  name: string;
+  number: string; // catalogue number, e.g. "01"
+  name: string; // display name, as set in the catalogue (e.g. "YŪGEN")
   capsule: string; // capsule slug
-  form: string;
-  timber: string;
-  pattern: string;
-  dimensions: string;
-  finish: string;
-  madeIn: string;
-  leadTimeWeeks: number;
-  price: string;
-  spec: string; // short mono spec line, e.g. "CARVED HARDWOOD · IKAT"
+  spec: string; // short mono descriptor, e.g. "IKAT · TUFTED FORM · GRAPHIC COLOUR"
+  tagline: string; // italic line
   description: string[];
+  price: string; // e.g. "KES 96,000"
+  availability: string | null; // e.g. "1 piece available"
+  notes: string[]; // e.g. "Built by hand in Nairobi."
   hero: PieceImage;
-  // Further gallery frames. Where photography is still to be sourced we render a
-  // labelled placeholder rather than substituting stock.
-  gallery: Array<PieceImage | { placeholder: string }>;
 }
 
 export interface Capsule {
@@ -46,8 +46,10 @@ export interface Capsule {
   number: string; // e.g. "CAPSULE 006"
   cover: ImageMetadata;
   coverAlt: string;
+  coverTitled: boolean; // cover artwork already carries the capsule name
   description: string; // one sentence
   story: string[];
+  closing: string[];
   order: number; // higher = newer
 }
 
@@ -57,150 +59,206 @@ export const capsules: Capsule[] = [
     name: 'Elsewhere',
     number: 'CAPSULE 006',
     cover: elsewhereCover,
-    coverAlt: 'A lone tree on a cliff top above open water, the Elsewhere capsule cover.',
-    description:
-      'Pieces made to be carried somewhere quieter — pattern held against open land and low sky.',
+    coverAlt: 'A wet road winding between giant redwoods in the rain, the Elsewhere capsule cover.',
+    coverTitled: true,
+    description: 'A collection shaped by the feeling of wandering.',
     story: [
-      'Elsewhere began with a single question: where would each piece rather be? Not a showroom, not a set. Somewhere with weather in it.',
-      'So we made the capsule for the edges of things. A lakeside. A forest floor. A green bank after rain. Each frame cut from real wood, each surface dressed in ikat and tapestry that hold their colour against a muted field.',
-      'Nothing here is rushed and nothing is quite identical. The grain follows its own path; the hand leaves its quiet trace. What you choose is made afresh, for one house, with the pattern and the timber settled between us.',
+      'There is a place beyond the familiar. We call it Elsewhere.',
+      'Ten pieces drawn from classic silhouettes, unexpected pattern and the romance of somewhere unknown. Each one handcrafted in Nairobi and ready to find its place.',
+    ],
+    closing: [
+      'A finished collection of one-of-a-kind pieces.',
+      'Available for private viewing in Nairobi.',
     ],
     order: 6,
   },
-  {
-    slug: 'orchard-light',
-    name: 'Orchard Light',
-    number: 'CAPSULE 005',
-    cover: wingbackOrchard,
-    coverAlt: 'A red floral wingback chair with a folded throw, standing in an orchard.',
-    description:
-      'Deeper florals and toile, drawn from long afternoons under fruit trees.',
-    story: [
-      'Orchard Light is the warmer half of the year, set down in furniture. Floral tapestry and toile, carried on classic silhouettes that have endured through time.',
-      'We favour slower, time-honoured ways of working — shaping, carving and finishing by hand — so each detail is given the time it deserves. Small variations are embraced rather than erased.',
-    ],
-    order: 5,
-  },
 ];
+
+const nairobiMahogany = ['Built by hand in Nairobi.', 'Using Pure Mahogany.'];
+const finishedNairobi = ['Finished piece.', 'Built by hand in Nairobi.'];
 
 export const pieces: Piece[] = [
   {
-    slug: 'lakeside-armchair',
-    name: 'Lakeside Armchair',
+    slug: 'yugen',
+    number: '01',
+    name: 'YŪGEN',
     capsule: 'elsewhere',
-    form: 'Armchair',
-    timber: 'White-finished hardwood',
-    pattern: 'Ikat, indigo and rust',
-    dimensions: 'W 74 · D 82 · H 88 cm',
-    finish: 'Hand-rubbed matte, water-based',
-    madeIn: 'Nairobi',
-    leadTimeWeeks: 10,
-    price: 'On request',
-    spec: 'WHITE-FRAME HARDWOOD · IKAT',
+    spec: 'Japanese-inspired chinoiserie · Dark palette',
+    tagline: 'A quiet sense of mystery.',
     description: [
-      'A classic wingback armchair, its frame carved and joined afresh in real wood and finished the pale colour of driftwood. The ikat is woven so the pattern shifts slightly across the seat, never quite repeating.',
-      'Made to order over roughly ten weeks. The timber and the weave can be chosen with you, so the piece settles into your rooms rather than ours.',
+      'A classic silhouette, reimagined through a Japanese-inspired landscape — rich in pattern, shadow and story.',
+      'Somewhere between the known and the unknown.',
     ],
-    hero: { src: armchairLakeside, alt: 'White-frame ikat armchair beside a lake with autumn hills behind.' },
-    gallery: [
-      { placeholder: 'Detail — the carved arm' },
-      { placeholder: 'Detail — the ikat weave' },
-      { placeholder: 'In situ' },
-    ],
+    price: 'KES 96,000',
+    availability: '1 piece available',
+    notes: nairobiMahogany,
+    hero: { src: yugen, alt: 'Mahogany armchair in a dark chinoiserie landscape fabric, standing in a vineyard.' },
   },
   {
-    slug: 'forest-ottoman',
-    name: 'Forest Ottoman',
+    slug: 'akari',
+    number: '02',
+    name: 'AKARI',
     capsule: 'elsewhere',
-    form: 'Buttoned ottoman',
-    timber: 'Carved hardwood, dark wax',
-    pattern: 'Ikat, navy and red',
-    dimensions: 'W 68 · D 68 · H 42 cm',
-    finish: 'Hand-buttoned, waxed feet',
-    madeIn: 'Nairobi',
-    leadTimeWeeks: 9,
-    price: 'On request',
-    spec: 'CARVED HARDWOOD · IKAT',
+    spec: 'Japanese-inspired chinoiserie · Light palette',
+    tagline: 'Where light finds another world.',
     description: [
-      'A deep buttoned ottoman on turned hardwood feet. Each button is drawn by hand, so the surface pulls into a quiet, irregular grid that softens with use.',
-      'Sized here for the foot of a chair or the middle of a room. Dimensions can be adjusted with you before making begins.',
+      'A quiet garden, imagined between memory and imagination — warm light, intricate pattern and a familiar form transformed.',
+      'A softer kind of mystery.',
     ],
-    hero: { src: ottomanForest, alt: 'Navy and red ikat buttoned ottoman on a pine forest floor.' },
-    gallery: [
-      { placeholder: 'Detail — hand buttoning' },
-      { placeholder: 'Detail — turned foot' },
-    ],
+    price: 'KES 96,000',
+    availability: '1 piece available',
+    notes: nairobiMahogany,
+    hero: { src: akari, alt: 'Mahogany armchair in a light chinoiserie fabric under a tree in a sunlit garden, a teacup on the seat.' },
   },
   {
-    slug: 'garden-settee',
-    name: 'Garden Settee',
+    slug: 'folie',
+    number: '03',
+    name: 'FOLIE',
     capsule: 'elsewhere',
-    form: 'Two-seat settee',
-    timber: 'Cream-finished hardwood',
-    pattern: 'Ikat, soft ochre',
-    dimensions: 'W 148 · D 84 · H 90 cm',
-    finish: 'Hand-rubbed matte',
-    madeIn: 'Nairobi',
-    leadTimeWeeks: 12,
-    price: 'On request',
-    spec: 'CREAM-FRAME HARDWOOD · IKAT',
+    spec: 'French-inspired silhouette · Eclectic pattern',
+    tagline: 'A classic, with a taste for the unexpected.',
     description: [
-      'A two-seat settee on a cream-finished frame, its back and arms carved to a low, easy line. The ikat is matched across the two cushions by hand.',
-      'The most involved piece in Elsewhere, and the slowest — around twelve weeks from the first drawing.',
+      'A Louis-era silhouette, reimagined through a riot of pattern and colour. Ornate lines meet bold geometry. Old-world elegance meets something altogether more irreverent.',
+      'Tradition, with a little folly.',
     ],
-    hero: { src: setteeGarden, alt: 'Cream-frame ikat settee on a green bank in a garden.' },
-    gallery: [
-      { placeholder: 'Detail — matched cushions' },
-      { placeholder: 'Detail — carved arm' },
-      { placeholder: 'In situ' },
-    ],
+    price: 'KES 200,000',
+    availability: '1 piece available',
+    notes: nairobiMahogany,
+    hero: { src: folie, alt: 'Carved cream settee in a red and black ikat, on a green bank under trees.' },
   },
   {
-    slug: 'orchard-wingback',
-    name: 'Orchard Wingback',
-    capsule: 'orchard-light',
-    form: 'Wingback chair',
-    timber: 'Carved hardwood, honey wax',
-    pattern: 'Floral tapestry, red ground',
-    dimensions: 'W 78 · D 86 · H 104 cm',
-    finish: 'Hand-carved wings, waxed',
-    madeIn: 'Nairobi',
-    leadTimeWeeks: 11,
-    price: 'On request',
-    spec: 'CARVED HARDWOOD · FLORAL TAPESTRY',
+    slug: 'miyabi',
+    number: '04',
+    name: 'MIYABI',
+    capsule: 'elsewhere',
+    spec: 'French silhouette · Chinoiserie · Gilded detail',
+    tagline: 'A little theatre, beautifully framed.',
     description: [
-      'A tall wingback in floral tapestry on a red ground, carried on a honey-waxed hardwood frame carved by hand. The wings are shaped for reading light and quiet.',
-      'Shown with a folded throw; the throw is not part of the piece. Pattern and timber are chosen with you.',
+      'Delicate Chinoiserie scenes unfold within a graceful French silhouette, finished with the faintest touch of gilding.',
+      'Romantic without excess. Ornate, yet restrained.',
+      'A study in quiet grandeur.',
     ],
-    hero: { src: wingbackOrchard, alt: 'Red floral wingback chair with a folded throw, standing in an orchard.' },
-    gallery: [
-      { placeholder: 'Detail — the carved wing' },
-      { placeholder: 'Detail — the tapestry' },
-      { placeholder: 'Back view' },
-    ],
+    price: 'KES 75,000 / chair',
+    availability: '6 chairs available',
+    notes: nairobiMahogany,
+    hero: { src: miyabi, alt: 'A pair of balloon-back mahogany chairs with chinoiserie backs, beneath a large tree at dusk.' },
   },
   {
-    slug: 'oak-salon-chairs',
-    name: 'Oak Salon Chairs',
-    capsule: 'orchard-light',
-    form: 'Pair of salon chairs',
-    timber: 'Solid oak',
-    pattern: 'Toile, olive on cream',
-    dimensions: 'each W 52 · D 56 · H 92 cm',
-    finish: 'Oiled oak, hand-finished',
-    madeIn: 'Nairobi',
-    leadTimeWeeks: 10,
-    price: 'On request',
-    spec: 'SOLID OAK · TOILE',
+    slug: 'arcadia',
+    number: '05',
+    name: 'ARCADIA',
+    capsule: 'elsewhere',
+    spec: 'French wingback · Birds · Blooms · Nature',
+    tagline: 'For hours that belong to no one.',
     description: [
-      'A pair of salon chairs in solid oak, dressed in an olive toile. Made and finished together so the grain and the pattern read as one set.',
-      'Sold as a pair. A single chair, or a longer run, can be commissioned to the same drawing.',
+      'A high-backed silhouette, softened by birds, blooms and the warmth of colour.',
+      'A place to retreat. To read. To linger. To lose the hour.',
+      'An idyll, made tangible.',
     ],
-    hero: { src: salonOak, alt: 'A pair of toile salon chairs beside a tree at dusk.' },
-    gallery: [
-      { placeholder: 'Detail — the oak joint' },
-      { placeholder: 'Detail — the toile' },
+    price: 'KES 165,000',
+    availability: '1 piece available',
+    notes: nairobiMahogany,
+    hero: { src: arcadia, alt: 'Red floral wingback chair with a cream throw, standing in an autumn orchard.' },
+  },
+  {
+    slug: 'rhythm',
+    number: '06',
+    name: 'RHYTHM',
+    capsule: 'elsewhere',
+    spec: 'Ikat · Tufted form · Graphic colour',
+    tagline: 'Somewhere, the evening begins.',
+    description: [
+      'An ikat of deep colour and quiet geometry, its pattern moving like music across the surface.',
+      'Generous in scale, impossible to overlook — a piece that brings a little ceremony to the room.',
+      'For lingering conversations, late hours, and rooms that come alive.',
     ],
+    price: 'KES 65,000',
+    availability: '1 piece available',
+    notes: finishedNairobi,
+    hero: { src: rhythm, alt: 'Large tufted ottoman in a navy and red ikat, on a pine forest floor.' },
+  },
+  {
+    slug: 'muse',
+    number: '07',
+    name: 'MUSE',
+    capsule: 'elsewhere',
+    spec: 'French-inspired silhouette · Eclectic pattern',
+    tagline: 'A familiar silhouette, with a story from somewhere else.',
+    description: [
+      'French curves meet an unexpected pattern — rich with colour, character and the romance of another land.',
+      'Old-world elegance, reimagined for elsewhere.',
+    ],
+    price: 'KES 92,000',
+    availability: '2 pieces available',
+    notes: nairobiMahogany,
+    hero: { src: muse, alt: 'Carved white armchair in a red and green ikat beside a lake, under blossom.' },
+  },
+  {
+    slug: 'rosee',
+    number: '08',
+    name: 'ROSÉE',
+    capsule: 'elsewhere',
+    spec: 'Sculptural mirror · Floral frame',
+    tagline: 'A little spring, held in place.',
+    description: [
+      'A graceful mirror wrapped in delicate florals - soft colour, intricate pattern and the freshness of a garden just waking.',
+      'Familiar in form, but imagined somewhere else.',
+      'A quiet reminder that beauty can be light.',
+    ],
+    price: 'KES 28,000',
+    availability: 'Finished piece',
+    notes: finishedNairobi,
+    hero: { src: rosee, alt: 'Sculptural mirror wrapped in a pink and red floral fabric, standing in a pine forest.' },
+  },
+  {
+    slug: 'reverie',
+    number: '09',
+    name: 'RÊVERIE',
+    capsule: 'elsewhere',
+    spec: 'Patterned mirror · Ikat frame',
+    tagline: 'Somewhere between memory and imagination.',
+    description: [
+      'A mirror wrapped in deep indigo, faded red and ivory - its pattern carrying the feeling of somewhere travelled, somewhere remembered, or perhaps somewhere only dreamed.',
+      'Set among the trees, it feels almost discovered rather than placed.',
+      'A reflection. A fragment of another place.',
+    ],
+    price: 'KES 28,000',
+    availability: 'Finished piece',
+    notes: finishedNairobi,
+    hero: { src: reverie, alt: 'Mirror wrapped in an indigo, red and ivory ikat, leaning against a tree in woodland beside an old book.' },
+  },
+  {
+    slug: 'atlas',
+    number: '10',
+    name: 'ATLAS',
+    capsule: 'elsewhere',
+    spec: 'Sculptural mirror · Graphic pattern',
+    tagline: 'A study in rhythm and colour.',
+    description: [
+      'Deep indigo, faded red and ivory trace a graphic geometry across a sculptural arch - bold enough to command attention, restrained enough to endure.',
+      'A little unexpected. A little irreverent.',
+    ],
+    price: 'KES 49,000',
+    availability: 'Finished piece',
+    notes: finishedNairobi,
+    hero: { src: atlas, alt: 'Tall arched floor mirror in an indigo, red and ivory chevron weave, on a wooden stand in a grassy meadow.' },
+  },
+  {
+    slug: 'paradox',
+    number: '11',
+    name: 'PARADOX',
+    capsule: 'elsewhere',
+    spec: 'French-inspired · Cane · Graphic geometry',
+    tagline: 'Where old-world form meets a different rhythm.',
+    description: [
+      'A classic French silhouette, softened by cane and aged colour.',
+      'Then comes the unexpected — a bold graphic geometry in black and ivory, bringing something sharper, stranger, more contemporary.',
+      'A little tradition. A little contradiction. Beautifully at home in Elsewhere.',
+    ],
+    price: 'KES 165,000',
+    availability: null,
+    notes: ['Built by hand in Nairobi.'],
+    hero: { src: paradox, alt: 'Cane-backed French wingback chair with a black and ivory geometric seat, in a meadow of daisies.' },
   },
 ];
 
@@ -222,6 +280,6 @@ export const otherPiecesInCapsule = (capsuleSlug: string, exceptSlug: string) =>
 
 // Featured on the home page.
 export const featuredPieces = () =>
-  ['orchard-wingback', 'forest-ottoman', 'garden-settee']
+  ['folie', 'arcadia', 'rhythm']
     .map((s) => pieceBySlug(s))
     .filter((p): p is Piece => Boolean(p));

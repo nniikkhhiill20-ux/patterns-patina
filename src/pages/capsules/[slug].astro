@@ -6,6 +6,7 @@ import Button from '../../components/Button.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import Divider from '../../components/Divider.astro';
 import { capsules, capsuleBySlug, piecesInCapsule } from '../../data/content';
+import { site, whatsappLink } from '../../data/site';
 
 export function getStaticPaths() {
   return capsules.map((c) => ({ params: { slug: c.slug } }));
@@ -21,12 +22,13 @@ const items = piecesInCapsule(capsule.slug);
     <Image
       src={capsule.cover}
       alt={capsule.coverAlt}
-      widths={[768, 1200, 1800]}
+      widths={[768, 1200, 1527]}
       sizes="100vw"
+      quality={90}
       class="cap-cover__img"
       loading="eager"
     />
-    <div class="cap-cover__overlay">
+    <div class:list={['cap-cover__overlay', capsule.coverTitled && 'sr-only']}>
       <h1 class="cap-cover__name">{capsule.name}</h1>
       <span class="cap-cover__num">{capsule.number}</span>
     </div>
@@ -34,13 +36,14 @@ const items = piecesInCapsule(capsule.slug);
 
   <!-- Story (serif editorial) -->
   <section class="cap-story">
+    <p class="cap-story__lead">{capsule.description}</p>
     {capsule.story.map((para) => (<p class="editorial">{para}</p>))}
   </section>
 
   <Divider class="cap-sep" />
 
   <!-- Pieces -->
-  <section class="section page-pad cap-pieces">
+  <section class="section page-pad cap-pieces" id="pieces">
     <header class="cap-pieces__head reveal">
       <p class="eyebrow">The pieces</p>
       <h2 class="h2">In {capsule.name}</h2>
@@ -52,14 +55,15 @@ const items = piecesInCapsule(capsule.slug);
 
   <!-- Footer CTA -->
   <section class="cap-cta">
-    <p class="cap-cta__line">Something close, but not quite this?</p>
-    <Button href="/commissions" variant="primary">Commission a variation</Button>
+    {capsule.closing.map((line, i) => (<p class:list={[i === 0 ? 'cap-cta__line' : 'cap-cta__sub']}>{line}</p>))}
+    <Button href={whatsappLink(`Hello Patterns + Patina — I would like to arrange a private viewing of ${capsule.name}.`)} variant="primary">WhatsApp {site.whatsappDisplay}</Button>
+    <p class="cap-cta__sub">Private viewings · Ready to own<br />Private &amp; project commissions <a href="/commissions">by enquiry</a>.</p>
   </section>
 </Base>
 
 <style>
   .cap-cover { position: relative; }
-  .cap-cover__img { width: 100%; min-height: 78vh; object-fit: cover; }
+  .cap-cover__img { width: 100%; min-height: 78vh; max-height: 92vh; object-fit: cover; object-position: center 58%; }
   .cap-cover::after {
     content: "";
     position: absolute; inset: 0;
@@ -83,6 +87,10 @@ const items = piecesInCapsule(capsule.slug);
     padding: 96px 20px;
   }
   .cap-story .editorial + .editorial { margin-top: 24px; }
+  .cap-story__lead {
+    font-family: var(--serif); font-weight: 300; font-size: clamp(24px, 3vw, 32px);
+    line-height: 1.3; color: var(--olive-story); margin-bottom: 32px;
+  }
 
   .cap-sep { margin: 0 auto; }
 
@@ -90,7 +98,7 @@ const items = piecesInCapsule(capsule.slug);
   .cap-pieces__head .eyebrow { margin-bottom: 12px; }
   .cap-pieces__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
   }
 
@@ -107,4 +115,8 @@ const items = piecesInCapsule(capsule.slug);
     font-family: var(--serif); font-weight: 300; font-style: italic;
     font-size: clamp(24px, 3vw, 34px); color: var(--olive-story);
   }
+  .cap-cta__sub {
+    font-family: var(--sans); font-weight: 300; font-size: 14px; line-height: 1.7; color: var(--ink-soft);
+  }
+  .cap-cta__sub a { color: var(--gold-text); text-decoration: underline; text-underline-offset: 3px; }
 </style>

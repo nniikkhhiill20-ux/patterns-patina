@@ -10,6 +10,7 @@ import {
   capsuleBySlug,
   otherPiecesInCapsule,
 } from '../../data/content';
+import { site, whatsappLink } from '../../data/site';
 
 export function getStaticPaths() {
   return pieces.map((p) => ({ params: { slug: p.slug } }));
@@ -19,71 +20,58 @@ const { slug } = Astro.params;
 const piece = pieceBySlug(slug!)!;
 const capsule = capsuleBySlug(piece.capsule)!;
 const others = otherPiecesInCapsule(piece.capsule, piece.slug);
-
-const details: Array<[string, string]> = [
-  ['Form', piece.form],
-  ['Timber', piece.timber],
-  ['Pattern', piece.pattern],
-  ['Dimensions', piece.dimensions],
-  ['Finish', piece.finish],
-  ['Made in', piece.madeIn],
-];
+const waHref = whatsappLink(`Hello Patterns + Patina — I'm interested in ${piece.name} (${capsule.name}, ${piece.number}).`);
 ---
-<Base title={piece.name} description={piece.description[0]}>
+<Base title={piece.name} description={`${piece.tagline} ${piece.description[0]}`}>
   <div class="piece page-pad">
-    <!-- Gallery -->
+    <!-- Photograph -->
     <div class="piece__gallery">
       <div class="frame">
         <Image
           src={piece.hero.src}
           alt={piece.hero.alt}
-          widths={[480, 768, 1100]}
-          sizes="(max-width: 768px) 100vw, 55vw"
-          class="ratio-4-5"
+          widths={[640, 960, 1280, 1800]}
+          sizes="(max-width: 768px) 100vw, 60vw"
+          quality={90}
           loading="eager"
         />
       </div>
-      {piece.gallery.map((g) => (
-        'placeholder' in g
-          ? <div class="placeholder ratio-4-5">{g.placeholder}</div>
-          : <div class="frame"><Image src={g.src} alt={g.alt} widths={[480, 768, 1100]} sizes="(max-width: 768px) 100vw, 55vw" class="ratio-4-5" loading="lazy" /></div>
-      ))}
     </div>
 
     <!-- Detail rail -->
     <aside class="piece__rail">
       <p class="piece__capsule">{capsule.name.toUpperCase()} · {capsule.number}</p>
+      <p class="piece__num">{piece.number}</p>
       <h1 class="piece__name">{piece.name}</h1>
       <p class="piece__spec">{piece.spec}</p>
-
-      <div class="piece__price-row">
-        <span class="piece__price">{piece.price}</span>
-        <span class="piece__lead">{piece.leadTimeWeeks} weeks</span>
-      </div>
+      <p class="piece__tagline">{piece.tagline}</p>
 
       <div class="piece__desc">
         {piece.description.map((d) => (<p class="body-sm">{d}</p>))}
       </div>
 
-      <dl class="piece__details">
-        {details.map(([label, value]) => (
-          <div class="piece__detail-row">
-            <dt>{label}</dt>
-            <dd>{value}</dd>
-          </div>
-        ))}
-      </dl>
+      <div class="piece__price-row">
+        <span class="piece__price">{piece.price}</span>
+        {piece.availability && <span class="piece__lead">{piece.availability}</span>}
+      </div>
 
-      <Button href={`/commissions?piece=${piece.slug}`} variant="primary" class="piece__cta">
-        Enquire about this piece
+      <div class="piece__notes">
+        {piece.notes.map((n) => (<p>{n}</p>))}
+      </div>
+
+      <Button href={waHref} variant="primary" class="piece__cta">
+        WhatsApp “{piece.name}”
       </Button>
-      <p class="piece__note">Each piece is made to order. Pattern and timber can be chosen with you.</p>
+      <p class="piece__note">
+        To purchase or arrange a private viewing in Nairobi. WhatsApp {site.whatsappDisplay}, or
+        <a href={`/commissions?piece=${piece.slug}`}>send an enquiry</a>.
+      </p>
     </aside>
   </div>
 
   {others.length > 0 && (
     <section class="section page-pad piece__others">
-      <h2 class="h2 piece__others-head reveal">Other pieces in {capsule.name}</h2>
+      <h2 class="h2 piece__others-head reveal">More from {capsule.name}</h2>
       <div class="piece__others-grid">
         {others.map((p) => (<ProductCard piece={p} />))}
       </div>
@@ -121,30 +109,30 @@ const details: Array<[string, string]> = [
   }
   .piece__price-row {
     display: flex; align-items: baseline; gap: 20px;
-    margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--bone-light);
+    margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--bone-light);
   }
   .piece__price { font-family: var(--serif); font-weight: 400; font-size: 22px; color: var(--ink); }
   .piece__lead {
     font-family: var(--sans); font-weight: 400; font-size: 10.5px;
     letter-spacing: .16em; text-transform: uppercase; color: var(--gold-text);
   }
+  .piece__num {
+    font-family: var(--serif); font-weight: 300; font-size: 18px;
+    color: var(--gold-text); margin-top: 22px;
+  }
+  .piece__gallery :global(img) { width: 100%; height: auto; display: block; }
+  .piece__tagline {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 24px; line-height: 1.3; color: var(--olive-story); margin-top: 22px;
+  }
+  .piece__notes { margin-top: 18px; }
+  .piece__notes p {
+    font-family: var(--sans); font-weight: 300; font-size: 14px; color: var(--ink-soft);
+  }
+  .piece__note a { color: var(--gold-text); text-decoration: underline; text-underline-offset: 3px; }
   .piece__desc { margin-top: 22px; }
   .piece__desc .body-sm + .body-sm { margin-top: 14px; }
 
-  .piece__details { margin: 26px 0 0; }
-  .piece__detail-row {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 20px;
-    padding: 14px 0; border-top: 1px solid var(--bone-light);
-  }
-  .piece__detail-row:last-child { border-bottom: 1px solid var(--bone-light); }
-  .piece__detail-row dt {
-    font-family: var(--mono); font-size: 10px; letter-spacing: .04em;
-    text-transform: uppercase; color: #8C8577;
-  }
-  .piece__detail-row dd {
-    margin: 0; text-align: right;
-    font-family: var(--sans); font-weight: 300; font-size: 14px; color: var(--ink);
-  }
 
   .piece__cta { margin-top: 28px; }
   .piece__note {
@@ -155,7 +143,7 @@ const details: Array<[string, string]> = [
   .piece__others-head { margin-bottom: 40px; }
   .piece__others-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
   }
 

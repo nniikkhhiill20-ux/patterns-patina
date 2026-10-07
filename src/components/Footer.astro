@@ -1,7 +1,7 @@
 ---
 import Wordmark from './Wordmark.astro';
 import LetterSignup from './LetterSignup.astro';
-import { site, footerExplore } from '../data/site';
+import { site, footerExplore, whatsappLink } from '../data/site';
 const year = 2026;
 ---
 <footer class="site-footer">
@@ -13,7 +13,10 @@ const year = 2026;
 
     <div class="site-footer__col">
       <h2 class="site-footer__head">Visit</h2>
-      <p class="site-footer__lines">The Workshop, Nairobi<br />By appointment<br />Tuesday – Saturday</p>
+      <p class="site-footer__lines">Private viewings in Nairobi<br />By appointment</p>
+      <p class="site-footer__lines site-footer__wa">
+        <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">WhatsApp {site.whatsappDisplay}</a>
+      </p>
     </div>
 
     <div class="site-footer__col">
@@ -32,7 +35,7 @@ const year = 2026;
 
   <div class="site-footer__bar">
     <span>PATTERNS + PATINA · EST. {year}</span>
-    <a href="https://instagram.com" rel="noopener noreferrer" target="_blank">INSTAGRAM</a>
+    <a href={site.instagramUrl} rel="noopener noreferrer" target="_blank">{site.instagramHandle.toUpperCase()}</a>
   </div>
 </footer>
 
@@ -73,6 +76,9 @@ const year = 2026;
   }
   @media (hover: hover) { .site-footer__links a:hover { color: var(--crest-gold); } }
   .site-footer__letter { margin-top: 18px; }
+  .site-footer__wa { margin-top: 10px; }
+  .site-footer__wa a { color: #D9D3C4; border-bottom: 1px solid #5a5446; }
+  @media (hover: hover) { .site-footer__wa a:hover { color: var(--crest-gold); } }
 
   .site-footer__bar {
     display: flex;

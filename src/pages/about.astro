@@ -4,7 +4,9 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { manifesto } from '../data/manifesto';
 import crest from '../assets/logo/pp-crest.png';
-import salonOak from '../assets/photography/salon-chairs-pair-oak.png';
+import { capsuleBySlug } from '../data/content';
+import { site } from '../data/site';
+const elsewhere = capsuleBySlug('elsewhere')!;
 ---
 <Base title="About" description="The manifesto of Patterns + Patina — made afresh in Nairobi, by hand.">
   <!-- Crest -->
@@ -14,6 +16,7 @@ import salonOak from '../assets/photography/salon-chairs-pair-oak.png';
 
   <!-- The manifesto, verbatim -->
   <article class="manifesto">
+    <p class="manifesto__author">{site.author}</p>
     <p class="manifesto__opening">{manifesto.openingItalic}</p>
 
     {manifesto.paragraphs.map((para, i) => (
@@ -53,9 +56,10 @@ import salonOak from '../assets/photography/salon-chairs-pair-oak.png';
   <!-- Workshop photography + two columns -->
   <section class="about-workshop frame" id="journal">
     <Image
-      src={salonOak}
-      alt="A pair of toile salon chairs beside a tree at dusk."
-      widths={[768, 1200, 1800]}
+      src={elsewhere.cover}
+      alt={elsewhere.coverAlt}
+      widths={[768, 1200, 1527]}
+      quality={90}
       sizes="100vw"
       class="ratio-16-9"
       loading="lazy"
@@ -89,6 +93,10 @@ import salonOak from '../assets/photography/salon-chairs-pair-oak.png';
     margin: 0 auto;
     padding: 56px 20px 96px;
     text-align: center;
+  }
+  .manifesto__author {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 15px; color: var(--muted); margin-bottom: 18px;
   }
   .manifesto__opening {
     font-family: var(--serif); font-weight: 300; font-style: italic;
